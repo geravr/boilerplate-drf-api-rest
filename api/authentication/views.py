@@ -4,9 +4,10 @@ from rest_framework.response import Response
 
 # Models
 from .models import CustomUser
+from django.contrib.auth.models import Group
 
 # Serializers
-from .serializers import (CustomUserSerializer, WhoamiSerializer)
+from .serializers import (CustomUserSerializer, GroupSerializer, WhoamiSerializer)
 
 # Mixins
 from utils.mixins.views import ModelViewSetMixin
@@ -29,6 +30,11 @@ class CustomUserViewSet(DefaultPermissionsMixin, ModelViewSetMixin):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+class GroupViewSet(DefaultPermissionsMixin, ModelViewSetMixin):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
 
 class WhoamiView(DefaultPermissionsMixin, ListAPIView):
     queryset = CustomUser.objects.all()
