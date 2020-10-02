@@ -9,10 +9,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # Views
-from .views import (CustomUserViewSet, WhoamiView)
+from .views import (CustomUserViewSet, GroupViewSet, WhoamiView)
 
 router = routers.DefaultRouter()
 router.register(r'users', CustomUserViewSet, 'users')
+router.register(r'groups', GroupViewSet, 'groups')
 
 class AuthView(APIView):
     """
@@ -21,6 +22,7 @@ class AuthView(APIView):
     def get(self, request, *args, **kwargs):
         apidocs = {
                     'Users': request.build_absolute_uri('users/'),
+                    'Groups': request.build_absolute_uri('groups/'),
                     'Whoami': request.build_absolute_uri('whoami/'),
                     'Token Obtain': request.build_absolute_uri('token/obtain/'),
                     'Token Refresh': request.build_absolute_uri('token/refresh/'),
