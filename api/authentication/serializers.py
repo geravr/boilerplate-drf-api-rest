@@ -10,6 +10,13 @@ from utils.mixins.serializers import DynamicFieldsModelSerializerMixin
 
 
 class CustomUserSerializer(DynamicFieldsModelSerializerMixin):
+
+    groups = serializers.SlugRelatedField(
+        many=True,
+        queryset=Group.objects.all(),
+        slug_field='name'
+     )
+
     class Meta:
         model = CustomUser
         fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name',
@@ -18,14 +25,27 @@ class CustomUserSerializer(DynamicFieldsModelSerializerMixin):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        instance = self.Meta.model(**validated_data)  # as long as the fields are the same, we can just use this
-        if password is not None:
-            instance.set_password(password)
-        instance.save()
-        return instance
+        groups = validated_data.pop('groups')
+        user = CustomUser.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+        )
+        for group in groups:
+            user.groups.add(group)
+        user.save()
+        return user
+
 
 class GroupSerializer(serializers.ModelSerializer):
+
+    permissions = serializers.SlugRelatedField(
+        many=True,
+        queryset=Group.objects.all(),
+        slug_field='name'
+     )
     class Meta:
         model = Group
         fields = ('id', 'name', 'permissions')
