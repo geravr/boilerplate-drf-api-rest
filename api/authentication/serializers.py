@@ -3,14 +3,13 @@ from rest_framework import serializers
 
 # Models
 from .models import CustomUser
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 
 # Mixins
 from utils.mixins.serializers import DynamicFieldsModelSerializerMixin
 
 
 class CustomUserSerializer(DynamicFieldsModelSerializerMixin):
-
     groups = serializers.SlugRelatedField(
         many=True,
         queryset=Group.objects.all(),
@@ -40,15 +39,19 @@ class CustomUserSerializer(DynamicFieldsModelSerializerMixin):
 
 
 class GroupSerializer(serializers.ModelSerializer):
-
     permissions = serializers.SlugRelatedField(
         many=True,
-        queryset=Group.objects.all(),
+        queryset=Permission.objects.all(),
         slug_field='name'
      )
     class Meta:
         model = Group
         fields = ('id', 'name', 'permissions')
+
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = '__all__'
 
 class WhoamiSerializer(serializers.ModelSerializer):
     class Meta:

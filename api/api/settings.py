@@ -119,7 +119,7 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = "authentication.CustomUser"
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'utils.pagination.CustomPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',

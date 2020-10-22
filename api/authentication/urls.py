@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # Views
-from .views import (CustomUserViewSet, GroupViewSet, WhoamiView)
+from .views import (CustomUserViewSet, GroupViewSet, ListPermissionView, WhoamiView)
 
 router = routers.DefaultRouter()
 router.register(r'users', CustomUserViewSet, 'users')
@@ -23,6 +23,7 @@ class AuthView(APIView):
         apidocs = {
                     'Users': request.build_absolute_uri('users/'),
                     'Groups': request.build_absolute_uri('groups/'),
+                    'Permissions': request.build_absolute_uri('permissions/'),
                     'Whoami': request.build_absolute_uri('whoami/'),
                     'Token Obtain': request.build_absolute_uri('token/obtain/'),
                     'Token Refresh': request.build_absolute_uri('token/refresh/'),
@@ -32,6 +33,7 @@ class AuthView(APIView):
 urlpatterns = [
     path('', AuthView.as_view()),
     url(r'^', include(router.urls)),
+    path('permissions/', ListPermissionView.as_view()),
     path('whoami/', WhoamiView.as_view()),
     path('token/obtain/', jwt_views.TokenObtainPairView.as_view(), name='token_create'),  # override sjwt stock token
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
